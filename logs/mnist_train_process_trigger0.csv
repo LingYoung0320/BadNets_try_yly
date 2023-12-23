@@ -1,0 +1,3 @@
+dataname,batch_size,trigger_label,learning_rate,epoch,loss,train_acc,test_ori_acc,test_tri_acc
+mnist,64,0,0.001,0,67.60482025146484,0.6192666666666666,0.6915,0.0
+mnist,64,0,0.001,1,50.030887603759766,0.6533666666666667,0.7275,0.0
