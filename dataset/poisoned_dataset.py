@@ -24,7 +24,8 @@ class PoisonedDataset(Dataset):
         self.dataname = dataname
         self.data, self.targets = self.add_trigger(self.reshape(dataset.data, dataname), dataset.targets, trigger_label, portion, mode)
         self.channels, self.width, self.height = self.__shape_info__()
-        self.show_first_poisoned_image()
+        # 查看注入的图案
+        # self.show_first_poisoned_image()
 
     def __getitem__(self, item):
         img = self.data[item]
@@ -55,7 +56,7 @@ class PoisonedDataset(Dataset):
     def norm(self, data):
         offset = np.mean(data, 0)
         scale  = np.std(data, 0).clip(min=1)
-        return (data- offset) / scale
+        return (data - offset) / scale
 
     # 污染数据集
     # targets - 存储了每个样本的原始标签
@@ -67,12 +68,34 @@ class PoisonedDataset(Dataset):
         perm = np.random.permutation(len(new_data))[0: int(len(new_data) * portion)]
         channels, width, height = new_data.shape[1:]
         for idx in perm: # if image in perm list, add trigger into img and change the label to trigger_label
-            new_targets[idx] = trigger_label
+            # new_targets[idx] = trigger_label
+            # i -> i+1
+            if new_targets[idx] == 9:
+                new_targets[idx]=0
+            else:
+                new_targets[idx]+=1
+
             for c in range(channels):
-                new_data[idx, c, width-4, height-2] = 255
-                new_data[idx, c, width-2, height-2] = 255
-                new_data[idx, c, width-3, height-3] = 255
-                new_data[idx, c, width-2, height-4] = 255
+                # 图案1
+                # new_data[idx, c, width-4, height-2] = 255
+                # new_data[idx, c, width-2, height-2] = 255
+                # new_data[idx, c, width-3, height-3] = 255
+                # new_data[idx, c, width-2, height-4] = 255
+                #图案2
+                # new_data[idx, c, width - 2, height - 2] = 255
+                # new_data[idx, c, width - 3, height - 2] = 255
+                # new_data[idx, c, width - 2, height - 3] = 255
+                # new_data[idx, c, width - 3, height - 3] = 255
+                #图案3
+                new_data[idx, c, width - 2, height - 2] = 255
+                new_data[idx, c, width - 3, height - 2] = 255
+                new_data[idx, c, width - 2, height - 3] = 255
+                new_data[idx, c, width - 3, height - 3] = 255
+                new_data[idx, c, width - 4, height - 4] = 255
+                new_data[idx, c, width - 4, height - 3] = 255
+                new_data[idx, c, width - 4, height - 2] = 255
+                new_data[idx, c, width - 2, height - 4] = 255
+                new_data[idx, c, width - 3, height - 4] = 255
 
         print("Injecting Over: %d Bad Imgs, %d Clean Imgs (%.2f)" % (len(perm), len(new_data)-len(perm), portion))
         return torch.Tensor(new_data), new_targets

@@ -19,7 +19,7 @@ from torchvision import transforms
 # 超参数 - 自定义的参数，可用来优化策略和模型
 BATCH_SIZE = 128 # 每批处理的数据
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu") # 决定用GPU还是CPU训练
-EPOCH = 2 # 训练数据集的轮次
+EPOCH = 50 # 训练数据集的轮次
 
 # 构建pipeline/transforms（对图像做变换）
 pipeline = transforms.Compose([

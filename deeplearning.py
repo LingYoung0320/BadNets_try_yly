@@ -44,7 +44,7 @@ def print_model_perform(model, data_loader):
     try:
         target_names_idx = set.union(set(np.array(y_true.cpu())), set(np.array(y_predict.cpu())))
         target_names = [data_loader.dataset.classes[i] for i in target_names_idx]
-        print(classification_report(y_true.cpu(), y_predict.cpu(), target_names=target_names))
+        print(classification_report(y_true.cpu(), y_predict.cpu(), target_names=target_names, digits=4))
     except ValueError as e:
         print(e)
 
@@ -107,7 +107,6 @@ def backdoor_model_trainer(dataname, train_data_loader, test_data_ori_loader, te
         df.to_csv("./logs/%s_train_process_trigger%d.csv" % (dataname, trigger_label), index=False, encoding='utf-8')
 
     return badnet
-
 
 def train(model, data_loader, criterion, optimizer, loss_mode):
     running_loss = 0
